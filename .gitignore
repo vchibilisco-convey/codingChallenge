@@ -1,4 +1,5 @@
 daemon/node_modules
+webService/node_modules
 
 *.sublime-project
 *.sublime-workspace
@@ -14,6 +15,7 @@ app_concat.js.map
 frameworks.js
 index-non-min.html
 daemon/npm-debug.log
+webService/npm-debug.log
 
 #scenario files
 createScenarioMacroVars.txt
