@@ -1,0 +1,20 @@
+daemon/node_modules
+
+*.sublime-project
+*.sublime-workspace
+*.orig
+*.pyc
+.idea
+
+#minimized files
+app.min.js
+app.min.js.map
+app_concat.js
+app_concat.js.map
+frameworks.js
+index-non-min.html
+daemon/npm-debug.log
+
+#scenario files
+createScenarioMacroVars.txt
+deleteScenarioMacroVars.txt

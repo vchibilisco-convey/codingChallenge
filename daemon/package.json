@@ -1,0 +1,17 @@
+{
+  "name": "daemon-pelotitas",
+  "version": "0.0.1",
+  "description": "daemon-pelotitas",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sovos Arg",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "daemon": "^1.1.0",
+    "mongoose": "^4.9.0",
+    "synchronize": "^2.0.0"
+  }
+}
