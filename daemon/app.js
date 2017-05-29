@@ -1,11 +1,10 @@
-var INTERVAL = 1000;
-
 var cycle_stop = false;
 var daemon = false;
 var timer;
 
 require('./classes');
-var JobModel = require('./models/jobs.model');
+var JobController = require('./controllers/job.controller');
+var Configuration = require('./config/config');
 
 process.argv.forEach(function (arg) {
   if (arg === '-d') daemon = true;
@@ -20,38 +19,12 @@ process.on('SIGTERM', function () {
   //timer = setTimeout(function () {
     runTask();
     if (!cycle_stop) cycle();
-  //}, INTERVAL);
+  //}, Configuration.interval );
 })();
 
 function runTask () {
-  var Errors = { weight: 1, jobs: []};
-  var Buildings = { weight: 2, jobs: []};
-  var Success = { weight: 3, jobs: []};
-  JobModel.findAll(function(err, jobs){
-    if(err){
-      return next(err);
-    }
-
-    Errors.jobs = jobs.filter(function(element){
-      return getJobsFromStatus(element, 'Error');
-    });
-    Buildings.jobs = jobs.filter(function(element){
-      return getJobsFromStatus(element, 'Building');
-    });
-    Success.jobs = jobs.filter(function(element){
-      return getJobsFromStatus(element, 'Success');
-    });
-    
-    console.log(Errors);
-    console.log(Buildings);
-    console.log(Success);
-
-  });
+  JobController.runTask();
   cycle_stop = true;
-}
-
-function getJobsFromStatus(obj, status){
-  return obj.status === status;
 }
 
 function stop () {
