@@ -4,7 +4,7 @@ exports.create = function(pJob, cb) {
   var job = new Job();
   job.name = pJob.name;
   job.status = pJob.status;
-  job.teams = ['Blowfish'. 'Sabertooth'];
+  job.teams = ['Dolphin', 'Blowfish'];
 
   job.save(function(err, res){
     cb(err, res);
