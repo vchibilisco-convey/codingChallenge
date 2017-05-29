@@ -6,7 +6,8 @@ function runTask () {
   var Errors = { priority: 1, jobs: []};
   var Buildings = { priority: 2, jobs: []};
   var Success = { priority: 3, jobs: []};
-  JobModel.findAll(function(err, jobs){
+
+  JobModel.findByTeam(function(err, jobs){
     if(err){
       return next(err);
     }
@@ -24,7 +25,6 @@ function runTask () {
     console.log(Errors);
     console.log(Buildings);
     console.log(Success);
-
   });
 }
 
