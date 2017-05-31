@@ -6,8 +6,47 @@ var indexGlobal = 0;
 var Failed = { priority: 1, jobs: []};
 var Buildings = { priority: 2, jobs: []};
 var Success = { priority: 3, jobs: []};
+var CurrentJobs = [];
 var _ = require('lodash');
+var Lcd = require('lcd');
 
+var lcd = new Lcd({
+  rs: 20,
+  e: 21,
+  data: [5, 6, 13, 19],
+  cols: 16,
+  rows: 1
+});
+
+process.on('SIGINT', function() {
+  lcd.clear();
+  lcd.close();
+  process.exit();
+});
+
+function print(str, pos) {
+  pos = pos || 0;
+
+  if (pos === str.length) {
+    pos = 0;
+  }
+
+  /*lcd.print(str[pos], function (err) {
+    if (err) {
+      throw err;
+    }
+
+    setTimeout(function () {
+      print(str, pos + 1);
+    }, 300);
+  });*/
+}
+
+lcd.on('ready', function () {
+  lcd.setCursor(16, 0);
+  lcd.autoscroll();
+  print('Hello, World! ** ');
+});
 
 function runTask () {
   JobModel.findByTeam(function(err, jobs){
@@ -24,7 +63,7 @@ function runTask () {
     Success.jobs = jobs.filter(function(element){
       return getJobsFromStatus(element, Configuration.SUCCESS);
     });
-    
+
     checkAndLoop();
   });
 }
@@ -42,19 +81,36 @@ function checkAndLoop() {
 }
 
 function loopJobs(arrayJobs){
+  arrayJobs = _.orderBy(arrayJobs, '_id', 'asc');
+  
+  if (CurrentJobs.length !== arrayJobs.length){
+    CurrentJobs = _.assign([], arrayJobs);
+  }else {
+	var i = 0;
+	var flag = false;
+    while (i <= arrayJobs.length){
+	  if(CurrentJobs[i]._id !== arrayJobs[i]._id){
+	    flag = true;
+	    break;
+	  }
+	}
+	if (flag)
+	  CurrentJobs = _.assign([], arrayJobs);
+  }
+  
   if(inter !== undefined)
     clearInterval(inter);
   
   inter = setInterval(function(){
-    if(indexGlobal === arrayJobs.length)
+    if(indexGlobal === CurrentJobs.length)
 	  indexGlobal = 0;
 	
-	var currentElement = _.assign({}, arrayJobs[indexGlobal]);
+	var currentElement = _.assign({}, CurrentJobs[indexGlobal]);
 	
 	console.log(currentElement._doc.name);
     showLigth(Configuration.pinJob, currentElement._doc.status);
     showLigth(Configuration.pinLastJob, currentElement._doc.lastStatus);
-
+	
     indexGlobal++;
   }, 1000);
 }
@@ -62,19 +118,21 @@ function loopJobs(arrayJobs){
 function showLigth(pin, status){
   switch(status){
 	case 0:
-	  piblaster.setPwm(pin, 1 );
+	  piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDON );
+	  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
+	  piblaster.setPwm(Configuration.pinJobBlue, Configuration.LEDOFF );
 	  break;
 	case 1:
-	  piblaster.setPwm(pin, 0.6 );
+	  piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDOFF );
+	  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
+	  piblaster.setPwm(Configuration.pinJobBlue, Configuration.LEDON );
 	  break;
 	case 2:
-	  piblaster.setPwm(pin, 0.1 );
+	  piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDOFF );
+	  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
+	  piblaster.setPwm(Configuration.pinJobBlue, Configuration.LEDON );
 	  break;
   }
-}
-
-function on(pin, status){
-  
 }
 
 function getJobsFromStatus(obj, status){
