@@ -9,13 +9,14 @@ var Success = { priority: 3, jobs: []};
 var CurrentJobs = [];
 var _ = require('lodash');
 var Lcd = require('lcd');
+var flagLCD = false;
 
 var lcd = new Lcd({
   rs: 20,
   e: 21,
   data: [5, 6, 13, 19],
   cols: 16,
-  rows: 1
+  rows: 2
 });
 
 process.on('SIGINT', function() {
@@ -31,7 +32,7 @@ function print(str, pos) {
     pos = 0;
   }
 
-  /*lcd.print(str[pos], function (err) {
+  lcd.print(str[pos], function (err) {
     if (err) {
       throw err;
     }
@@ -39,13 +40,17 @@ function print(str, pos) {
     setTimeout(function () {
       print(str, pos + 1);
     }, 300);
-  });*/
+  });
 }
 
 lcd.on('ready', function () {
-  lcd.setCursor(16, 0);
-  lcd.autoscroll();
-  print('Hello, World! ** ');
+  lcd.setCursor(0, 0); // col 0, row 0
+  lcd.print("Fruta"); // print time
+  lcd.once("printed", function(){
+    lcd.setCursor(0,1);
+    lcd.print("Gratis");
+  });
+  
 });
 
 function runTask () {
@@ -108,11 +113,11 @@ function loopJobs(arrayJobs){
 	var currentElement = _.assign({}, CurrentJobs[indexGlobal]);
 	
 	console.log(currentElement._doc.name);
-    showLigth(Configuration.pinJob, currentElement._doc.status);
-    showLigth(Configuration.pinLastJob, currentElement._doc.lastStatus);
+    //showLigth(Configuration.pinJob, currentElement._doc.status);
+    //showLigth(Configuration.pinLastJob, currentElement._doc.lastStatus);
 	
     indexGlobal++;
-  }, 1000);
+  }, 3000);
 }
 
 function showLigth(pin, status){
