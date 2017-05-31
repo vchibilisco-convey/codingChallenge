@@ -12,11 +12,11 @@ var Lcd = require('lcd');
 var flagLCD = false;
 
 var lcd = new Lcd({
-  rs: 20,
-  e: 21,
-  data: [5, 6, 13, 19],
-  cols: 16,
-  rows: 2
+  rs: Configuration.pinsLCD.rs,
+  e: Configuration.pinsLCD.e,
+  data: Configuration.pinsLCD.data,
+  cols: Configuration.pinsLCD.cols,
+  rows: Configuration.pinsLCD.rows
 });
 
 process.on('SIGINT', function() {
@@ -95,7 +95,7 @@ function loopJobs(arrayJobs){
 	  }
 	}
 	if (flag)
-	  CurrentJobs = _.assign([], arrayJobs);
+	  CurrentJobs = _.clone(arrayJobs);
   }
   
   if(inter !== undefined)
@@ -105,20 +105,23 @@ function loopJobs(arrayJobs){
     if(indexGlobal === CurrentJobs.length)
 	  indexGlobal = 0;
 	
-	var currentElement = _.assign({}, CurrentJobs[indexGlobal]);
-	if(flagLCD){
-	  lcd.setCursor(0, 0); // col 0, row 0
-  	  lcd.print(currentElement._doc.name); // print time
-	  lcd.once("printed", function(){
-	    lcd.setCursor(0,1);
-	    lcd.print("Building");
-	  });
+	var currentElement = _.clone(CurrentJobs[indexGlobal]);
+	
+	if(currentElement._doc !== undefined){
+	  if(flagLCD){
+	    lcd.clear();
+	    lcd.setCursor(0, 0); // col 0, row 0
+  	    lcd.print(currentElement._doc.name); // print name
+	    lcd.once('printed', function(){
+	      lcd.setCursor(0,1);
+	      lcd.print(getStatusStr(currentElement._doc.status));
+	    });
+      }
+      
+      //showLigth(Configuration.pinJob, currentElement._doc.status);
+      //showLigth(Configuration.pinLastJob, currentElement._doc.lastStatus);
     }
-	
-	console.log(currentElement._doc.name);
-    //showLigth(Configuration.pinJob, currentElement._doc.status);
-    //showLigth(Configuration.pinLastJob, currentElement._doc.lastStatus);
-	
+
     indexGlobal++;
   }, 3000);
 }
@@ -140,6 +143,19 @@ function showLigth(pin, status){
 	  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
 	  piblaster.setPwm(Configuration.pinJobBlue, Configuration.LEDON );
 	  break;
+  }
+}
+
+function getStatusStr(statusInt) {
+  switch(statusInt){
+	case 0:
+	  return 'Failed';
+	case 1:
+	  return 'Building';
+	case 2:
+	  return 'Success';
+	default:
+	  return 'Undefined';
   }
 }
 
