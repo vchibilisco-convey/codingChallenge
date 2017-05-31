@@ -44,12 +44,7 @@ function print(str, pos) {
 }
 
 lcd.on('ready', function () {
-  lcd.setCursor(0, 0); // col 0, row 0
-  lcd.print("Fruta"); // print time
-  lcd.once("printed", function(){
-    lcd.setCursor(0,1);
-    lcd.print("Gratis");
-  });
+  flagLCD = true;
   
 });
 
@@ -111,6 +106,14 @@ function loopJobs(arrayJobs){
 	  indexGlobal = 0;
 	
 	var currentElement = _.assign({}, CurrentJobs[indexGlobal]);
+	if(flagLCD){
+	  lcd.setCursor(0, 0); // col 0, row 0
+  	  lcd.print(currentElement._doc.name); // print time
+	  lcd.once("printed", function(){
+	    lcd.setCursor(0,1);
+	    lcd.print("Building");
+	  });
+    }
 	
 	console.log(currentElement._doc.name);
     //showLigth(Configuration.pinJob, currentElement._doc.status);
