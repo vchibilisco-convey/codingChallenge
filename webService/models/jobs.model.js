@@ -12,7 +12,7 @@ exports.create = function(pJob, cb) {
     teams: ['Blowfish', 'Stonefish']
   }
 
-  Job.findOneAndUpdate(query, job, {upsert: true}, function(err, res){
+  Job.findOneAndUpdate(query, job, {upsert: true, new: true}, function(err, res){
     cb(err, res);
   });
 };

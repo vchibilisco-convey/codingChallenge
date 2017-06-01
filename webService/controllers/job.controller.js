@@ -6,7 +6,7 @@ var JobModel = require('../models/jobs.model');
 // more routes for our API will happen here
 router.route('/')
   .post(function(req, res, next){
-    JobModel.create(req.body, function(err, job){
+    JobModel.create(req.query, function(err, job){
       if(err){
         return next(err)
       }
