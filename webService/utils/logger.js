@@ -1,4 +1,5 @@
 var winston = require('winston');
+require('winston-daily-rotate-file')
 var path = require('path');
 var fs = require('fs');
 
@@ -9,32 +10,22 @@ logDirectory = path.join(logDirectory, 'activity');
 
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
-var infoLogFileName = path.join(logDirectory, 'info.log');
-var errorLogFileName = path.join(logDirectory, 'error.log');
-var exceptionsFileName = path.join(logDirectory, 'exceptions.log');
+var logFileName = path.join(logDirectory, 'debug.log');
 
 var logger;
 
 if (!logger) {
-  winston.handleExceptions(new winston.transports.File({ filename: exceptionsFileName }));
-  winston.add(require('winston-daily-rotate-file'));
+  var transportDailyRotateFile = new winston.transports.DailyRotateFile({
+    filename: logFileName,
+    datePattern: 'yyyy-MM-dd.',
+    prepend: true,
+    level: process.env.ENV === 'development' ? 'debug' : 'info'
+  });
 
-  logger = new winston.Logger({
-    level: 'verbose',
+  logger = new (winston.Logger)({
     transports: [
       new (winston.transports.Console)(),
-      new (winston.transports.File)({
-        name: 'info-file',
-        filename: infoLogFileName,
-        level: 'info',
-        json: true
-      }),
-      new (winston.transports.File)({
-        name: 'error-file',
-        filename: errorLogFileName,
-        level: 'error',
-        json: true
-      })
+      transportDailyRotateFile
     ]
   });
 }
