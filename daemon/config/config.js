@@ -22,4 +22,4 @@ exports.pinJobBlue = 17;
 exports.LEDON = 0;
 exports.LEDOFF = 1;
 
-exports.mongCS = 'mongodb://10.14.10.165:27017/daemon';
+exports.mongCS = 'mongodb://10.4.3.35:27017/daemon';

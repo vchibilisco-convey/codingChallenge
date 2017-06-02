@@ -1,7 +1,10 @@
 var JobModel = require('../models/jobs.model');
 var Configuration = require('../config/config');
+var lightModule = require('../models/light.model');
+var efects = require('./efect.controller');
 var piblaster = require('pi-blaster.js');
 var inter;
+var intervalLigth;
 var indexGlobal = 0;
 var Failed = { priority: 1, jobs: []};
 var Buildings = { priority: 2, jobs: []};
@@ -49,6 +52,11 @@ lcd.on('ready', function () {
 });
 
 function runTask () {
+  //piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDOFF );
+	//  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
+	//console.log('prendeeee');
+	//  piblaster.setPwm(17, 1 );
+	  //return;
   JobModel.findByTeam(function(err, jobs){
     if(err){
       return next(err);
@@ -110,40 +118,36 @@ function loopJobs(arrayJobs){
 	if(currentElement._doc !== undefined){
 	  if(flagLCD){
 	    lcd.clear();
+	    console.log(currentElement._doc.name);
 	    lcd.setCursor(0, 0); // col 0, row 0
-  	    lcd.print(currentElement._doc.name); // print name
+  	    lcd.print('Hola'); // print name
 	    lcd.once('printed', function(){
 	      lcd.setCursor(0,1);
 	      lcd.print(getStatusStr(currentElement._doc.status));
 	    });
       }
       
-      //showLigth(Configuration.pinJob, currentElement._doc.status);
-      //showLigth(Configuration.pinLastJob, currentElement._doc.lastStatus);
+      /*if(intervalLigth !== undefined ) {
+	    clearInterval(intervalLigth);
+	  }
+	  
+	  intervalLigth = setInterval(function(){
+		switch(currentElement._doc.status){
+		  case 0:
+			efects.turnOnPulse(lightModule.red);
+		    break;
+		  case 1:
+			efects.turnOnSnake(lightModule.blue);
+			break;
+		  case 2:
+		    ejects.turnOnFixed(lightModule.green);
+		    break;
+		}  
+	  }, 400);*/
     }
 
     indexGlobal++;
   }, 3000);
-}
-
-function showLigth(pin, status){
-  switch(status){
-	case 0:
-	  piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDON );
-	  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
-	  piblaster.setPwm(Configuration.pinJobBlue, Configuration.LEDOFF );
-	  break;
-	case 1:
-	  piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDOFF );
-	  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
-	  piblaster.setPwm(Configuration.pinJobBlue, Configuration.LEDON );
-	  break;
-	case 2:
-	  piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDOFF );
-	  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
-	  piblaster.setPwm(Configuration.pinJobBlue, Configuration.LEDON );
-	  break;
-  }
 }
 
 function getStatusStr(statusInt) {
