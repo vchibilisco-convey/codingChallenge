@@ -16,15 +16,15 @@ process.on('SIGTERM', function () {
 });
 
 (function cycle () {
-  //timer = setTimeout(function () {
+  timer = setTimeout(function () {
     runTask();
     if (!cycle_stop) cycle();
-  //}, Configuration.interval );
+  }, Configuration.interval );
 })();
 
 function runTask () {
   JobController.runTask();
-  cycle_stop = true;
+  cycle_stop = false;
 }
 
 function stop () {

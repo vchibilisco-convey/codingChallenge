@@ -9,9 +9,12 @@
   "author": "Sovos Arg",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "daemon": "^1.1.0",
-    "mongoose": "^4.9.0",
-    "synchronize": "^2.0.0"
+    "body-parser": "1.17.1",
+    "daemon": "1.1.0",
+    "lcd": "1.1.4",
+    "lodash": "4.17.4",
+    "mongoose": "4.9.0",
+    "pi-blaster.js": "0.1.1",
+    "synchronize": "2.0.0"
   }
 }
