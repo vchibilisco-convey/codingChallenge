@@ -7,8 +7,8 @@ exports.SUCCESS = 2;
 
 //pins lcd
 exports.pinsLCD = {
-  rs: 20,
-  e: 21,
+  rs: 16,
+  e: 12,
   data: [5, 6, 13, 19],
   cols: 16,
   rows: 2

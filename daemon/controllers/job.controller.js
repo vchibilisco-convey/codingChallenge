@@ -54,9 +54,9 @@ lcd.on('ready', function () {
 function runTask () {
   //piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDOFF );
 	//  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
-	//console.log('prendeeee');
-	//  piblaster.setPwm(17, 1 );
-	  //return;
+	console.log('prendeeee');
+	  piblaster.setPwm(17, 1 );
+	  return;
   JobModel.findByTeam(function(err, jobs){
     if(err){
       return next(err);
@@ -120,7 +120,7 @@ function loopJobs(arrayJobs){
 	    lcd.clear();
 	    console.log(currentElement._doc.name);
 	    lcd.setCursor(0, 0); // col 0, row 0
-  	    lcd.print('Hola'); // print name
+  	    lcd.print(currentElement._doc.name); // print name
 	    lcd.once('printed', function(){
 	      lcd.setCursor(0,1);
 	      lcd.print(getStatusStr(currentElement._doc.status));
