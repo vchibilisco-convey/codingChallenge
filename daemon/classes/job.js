@@ -8,7 +8,8 @@ var Schema = mongoose.Schema;
 var JobSchema = new Schema({
   id: String,
   name: String,
-  status: String,
+  status: Number,
+  lastStatus: Number,
   teams: Array
 });
 
