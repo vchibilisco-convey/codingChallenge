@@ -13,6 +13,7 @@ var CurrentJobs = [];
 var _ = require('lodash');
 var Lcd = require('lcd');
 var flagLCD = false;
+var lightInit = true;
 
 var lcd = new Lcd({
   rs: Configuration.pinsLCD.rs,
@@ -48,15 +49,33 @@ function print(str, pos) {
 
 lcd.on('ready', function () {
   flagLCD = true;
-  
 });
 
 function runTask () {
   //piblaster.setPwm(Configuration.pinJobRed, Configuration.LEDOFF );
 	//  piblaster.setPwm(Configuration.pinJobGreen, Configuration.LEDOFF );
-	console.log('prendeeee');
-	  piblaster.setPwm(17, 1 );
-	  return;
+	//console.log('prendeeee');
+	  //piblaster.setPwm(17, 1 );
+	  //return;
+   /*/if (lightInit){
+	 efects.off();
+	 lightInit = false;
+   }*/
+   
+   //console.log("rojo");
+  // piblaster.setPwm(2, 0 );
+  // piblaster.setPwm(3, 0 );
+  // piblaster.setPwm(4, 0 );
+   
+   //piblaster.setPwm(17, 0 );
+   //piblaster.setPwm(27, 0 );
+   //piblaster.setPwm(22, 0 );
+   
+   //piblaster.setPwm(23, 0 );
+   //piblaster.setPwm(24, 0 );
+   //piblaster.setPwm(25, 0 );
+   
+   //return;
   JobModel.findByTeam(function(err, jobs){
     if(err){
       return next(err);
@@ -115,11 +134,12 @@ function loopJobs(arrayJobs){
 	
 	var currentElement = _.clone(CurrentJobs[indexGlobal]);
 	
-	if(currentElement._doc !== undefined){
+	if(currentElement !== undefined){
 	  if(flagLCD){
 	    lcd.clear();
 	    console.log(currentElement._doc.name);
 	    lcd.setCursor(0, 0); // col 0, row 0
+  	    console.log(currentElement._doc.name);
   	    lcd.print(currentElement._doc.name); // print name
 	    lcd.once('printed', function(){
 	      lcd.setCursor(0,1);
@@ -127,23 +147,26 @@ function loopJobs(arrayJobs){
 	    });
       }
       
-      /*if(intervalLigth !== undefined ) {
+      if(intervalLigth !== undefined ) {
 	    clearInterval(intervalLigth);
 	  }
 	  
 	  intervalLigth = setInterval(function(){
 		switch(currentElement._doc.status){
 		  case 0:
+			console.log(currentElement._doc.status)
 			efects.turnOnPulse(lightModule.red);
 		    break;
 		  case 1:
+			console.log(currentElement._doc.status)
 			efects.turnOnSnake(lightModule.blue);
 			break;
 		  case 2:
-		    ejects.turnOnFixed(lightModule.green);
+			console.log(currentElement._doc.status)
+		    efects.turnOnFixed(lightModule.green);
 		    break;
 		}  
-	  }, 400);*/
+	  }, 400);
     }
 
     indexGlobal++;
